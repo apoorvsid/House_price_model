@@ -45,22 +45,18 @@ def user_input_features():
 df_user = user_input_features()
 
 df = pd.read_csv('Housing.csv')
-st.write("Read")
 to_convert = ['mainroad','guestroom','basement','hotwaterheating','airconditioning','prefarea']
 def to_map(x):
   return x.map({'yes':1,'no':0})
 df[to_convert] = df[to_convert].apply(to_map)
-st.write("Converted")
 status = pd.get_dummies(df['furnishingstatus'], drop_first=True)
 df = pd.concat([df, status], axis=1)
 df.drop(['furnishingstatus'], axis=1, inplace=True)
-st.write("got dummies")
 to_scale = ['area', 'bedrooms', 'bathrooms', 'stories', 'parking','price']
 df[to_scale] = MinMaxScaler().fit_transform(df[to_scale])
 y_train = df.pop('price')
 X_train = df
 reg = XGBRegressor().fit(X_train, y_train)
-st.write("Modelled successfully")
 df1 = pd.read_csv('Housing.csv')
 maxa = df1['area'].max()
 mina = df1['area'].min()
@@ -127,11 +123,9 @@ final_input = (narea, nbedrooms, nbathrooms, nstories, nmainroad, nguestroom, nb
 final_input = np.asarray(final_input)
 final_input = final_input.reshape(1, -1)
 price_predict = reg.predict(final_input)
-st.write(final_input)
 maxpp = df1['price'].max()
 minpp = df1['price'].min()
 final_price_predict = (price_predict*(maxpp-minpp))+minpp
 
 st.subheader("Predicted price of the house is :")
 st.subheader("${:0,.2f}".format(float(final_price_predict)))
-# st.write(round(float(final_price_predict),2))
