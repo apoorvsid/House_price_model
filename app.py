@@ -18,7 +18,7 @@ def user_input_features():
   basement = st.radio("Is there a basement?", ("Yes", "No"), horizontal=True)
   hotwaterheating = st.radio("Does the house have a hot water heating system?", ("Yes", "No"), horizontal=True)
   airconditioning = st.radio("Does the house have air conditioning?", ("Yes", "No"), horizontal=True)
-  prefarea = st.radio("Is there a swimmingpool in the premise?", ("Yes", "No"), horizontal=True)
+  prefarea = st.radio("Is the house located in your preferred neighborhood?", ("Yes", "No"), horizontal=True)
   furnishingstatus = st.radio("To what degree is the house furnished?", ("Furnished", "Semi-furnished", "Unfurnished"), horizontal=True)
 
   data = {'AREA':area, 
@@ -39,27 +39,27 @@ def user_input_features():
 df_user = user_input_features()
 
 df1 = pd.read_csv('Housing.csv')
-maxa = df1['area'].max()
-mina = df1['area'].min()
-narea = (df_user['AREA'].iloc[0]-mina)/(maxa-mina)
-
-maxb = df1['bedrooms'].max()
-minb = df1['bedrooms'].min()
-nbedrooms = (df_user['BEDROOMS'].iloc[0]-minb)/(maxb-minb)
-
-maxbb = df1['bathrooms'].max()
-minbb = df1['bathrooms'].min()
-nbathrooms = (df_user['BATHROOMS'].iloc[0]-minbb)/(maxbb-minb)
-
-maxs = df1['stories'].max()
-mins = df1['stories'].min()
-nstories = (df_user['STORIES'].iloc[0]-mins)/(maxs-mins)
-
-maxp = df1['parking'].max()
-minp = df1['parking'].min()
-nparking = (df_user['PARKING'].iloc[0]-minp)/(maxp-minp)
-
-nmainroad, nguestroom, nbasement, nhotwaterheating, nairconditioning, nprefarea, nsemi_furnish, nunfurnish = None, None, None, None, None, None, None, None
+# maxa = df1['area'].max()
+# mina = df1['area'].min()
+# narea = (df_user['AREA'].iloc[0]-mina)/(maxa-mina)
+narea = df_user['AREA'].iloc[0]
+# maxb = df1['bedrooms'].max()
+# minb = df1['bedrooms'].min()
+# nbedrooms = (df_user['BEDROOMS'].iloc[0]-minb)/(maxb-minb)
+nbedrooms = df_user['BEDROOMS'].iloc[0]
+# maxbb = df1['bathrooms'].max()
+# minbb = df1['bathrooms'].min()
+# nbathrooms = (df_user['BATHROOMS'].iloc[0]-minbb)/(maxbb-minb)
+nbathrooms = df_user['BATHROOMS'].iloc[0]
+# maxs = df1['stories'].max()
+# mins = df1['stories'].min()
+# nstories = (df_user['STORIES'].iloc[0]-mins)/(maxs-mins)
+nstories = df_user['STORIES'].iloc[0]
+# maxp = df1['parking'].max()
+# minp = df1['parking'].min()
+# nparking = (df_user['PARKING'].iloc[0]-minp)/(maxp-minp)
+nparking = df_user['PARKING'].iloc[0]
+nmainroad, nguestroom, nbasement, nhotwaterheating, nairconditioning, nprefarea, nfurnish, nsemi_furnish, nunfurnish = None, None, None, None, None, None, None, None, None
 if df_user['MAINROAD'].iloc[0]=='Yes':
   nmainroad = 1
 else:
@@ -91,23 +91,26 @@ else:
   nprefarea = 0 
 
 if df_user['FURNISHINGSTATUS'].iloc[0]=='Furnished': 
+  nfurnish = 1
   nsemi_furnish = 0 
   nunfurnish = 0 
 elif df_user['FURNISHINGSTATUS'].iloc[0]=='Semi-furnished': 
+  nfurnish = 0
   nsemi_furnish = 1
   nunfurnish = 0 
 elif df_user['FURNISHINGSTATUS'].iloc[0]=='Unfurnished':
+  nfurnish = 0
   nsemi_furnish = 0 
   nunfurnish = 1
 
-final_input = (narea, nbedrooms, nbathrooms, nstories, nmainroad, nguestroom, nbasement, nhotwaterheating, nairconditioning, nparking, nprefarea, nsemi_furnish, nunfurnish)
+final_input = (narea, nbathrooms, nstories, nguestroom, nairconditioning, nparking, nprefarea, nfurnish, nsemi_furnish, nunfurnish)
 final_input = np.asarray(final_input)
 final_input = final_input.reshape(1, -1)
 price_predict = reg.predict(final_input)
-maxpp = df1['price'].max()
-minpp = df1['price'].min()
-final_price_predict = (price_predict*(maxpp-minpp))+minpp
+# maxpp = df1['price'].max()
+# minpp = df1['price'].min()
+# final_price_predict = (price_predict*(maxpp-minpp))+minpp
 st.write("\n")
 st.write("\n")
 st.subheader("Predicted price of the house is :")
-st.subheader("${:0,.2f}".format(float(final_price_predict)))
+st.subheader("${:0,.2f}".format(float(price_predict)))
