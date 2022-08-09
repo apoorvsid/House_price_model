@@ -1,31 +1,25 @@
 from typing import final
-from sklearn.preprocessing import MinMaxScaler
-from xgboost import XGBRegressor 
 import streamlit as st
 import pandas as pd 
 import numpy as np
+from model import reg
 
 st.header("House price prediction model")
 st.subheader("Input user parameters")
 
 def user_input_features():
-  area = st.number_input("Area of the house (in sq. ft.)", min_value=1500, max_value=16500, step=1)
-  st.write("Min value :",1500, "Max value :",16500)
-  bedrooms = st.number_input("Number of bedrooms in the house", min_value=1, max_value=6, step=1)
-  st.write("Min value :",1, "Max value :",6)
-  bathrooms = st.number_input("Number of bathrooms in the house", min_value=1, max_value=4, step=1)
-  st.write("Min value :",1, "Max value :",4)
-  stories = st.number_input("How many storeys the house has?", min_value=1, max_value=4, step=1)
-  st.write("Min value :",1, "Max value :",4)
-  mainroad = st.selectbox("Is the house close to the nearest main road?", ("Yes", "No"))
-  guestroom = st.selectbox("Is there a guestroom?", ("Yes", "No"))
-  basement = st.selectbox("Is there a basement?", ("Yes", "No"))
-  hotwaterheating = st.selectbox("Does the house have a hot water heating system?", ("Yes", "No"))
-  airconditioning = st.selectbox("Does the house have air conditioning?", ("Yes", "No"))
-  parking = st.number_input("How many cars can be parked in the garage", min_value = 0, max_value=3, step=1)
-  st.write("Min value :",0, "Max value :",3)
-  prefarea = st.selectbox("Is there a swimmingpool in the premise?", ("Yes", "No"))
-  furnishingstatus = st.selectbox("To what degree is the house furnished?", ("Furnished", "Semi-furnished", "Unfurnished"))
+  area = st.slider("Area of the house (in sq. ft.)", min_value=1500, max_value=16500, step=10)
+  bedrooms = st.slider("Number of bedrooms in the house", min_value=1, max_value=6, step=1)
+  bathrooms = st.slider("Number of bathrooms in the house", min_value=1, max_value=4, step=1)
+  stories = st.slider("How many storeys the house has?", min_value=1, max_value=4, step=1)
+  parking = st.slider("How many cars can be parked in the garage", min_value = 0, max_value=3, step=1)
+  mainroad = st.radio("Is the house close to the nearest main road?", ("Yes", "No"), horizontal=True)
+  guestroom = st.radio("Is there a guestroom?", ("Yes", "No"), horizontal=True)
+  basement = st.radio("Is there a basement?", ("Yes", "No"), horizontal=True)
+  hotwaterheating = st.radio("Does the house have a hot water heating system?", ("Yes", "No"), horizontal=True)
+  airconditioning = st.radio("Does the house have air conditioning?", ("Yes", "No"), horizontal=True)
+  prefarea = st.radio("Is there a swimmingpool in the premise?", ("Yes", "No"), horizontal=True)
+  furnishingstatus = st.radio("To what degree is the house furnished?", ("Furnished", "Semi-furnished", "Unfurnished"), horizontal=True)
 
   data = {'AREA':area, 
           'BEDROOMS':bedrooms,
@@ -44,19 +38,6 @@ def user_input_features():
 
 df_user = user_input_features()
 
-df = pd.read_csv('Housing.csv')
-to_convert = ['mainroad','guestroom','basement','hotwaterheating','airconditioning','prefarea']
-def to_map(x):
-  return x.map({'yes':1,'no':0})
-df[to_convert] = df[to_convert].apply(to_map)
-status = pd.get_dummies(df['furnishingstatus'], drop_first=True)
-df = pd.concat([df, status], axis=1)
-df.drop(['furnishingstatus'], axis=1, inplace=True)
-to_scale = ['area', 'bedrooms', 'bathrooms', 'stories', 'parking','price']
-df[to_scale] = MinMaxScaler().fit_transform(df[to_scale])
-y_train = df.pop('price')
-X_train = df
-reg = XGBRegressor().fit(X_train, y_train)
 df1 = pd.read_csv('Housing.csv')
 maxa = df1['area'].max()
 mina = df1['area'].min()
@@ -126,6 +107,7 @@ price_predict = reg.predict(final_input)
 maxpp = df1['price'].max()
 minpp = df1['price'].min()
 final_price_predict = (price_predict*(maxpp-minpp))+minpp
-
+st.write("\n")
+st.write("\n")
 st.subheader("Predicted price of the house is :")
 st.subheader("${:0,.2f}".format(float(final_price_predict)))
