@@ -13,7 +13,7 @@ def user_input_features():
   area = st.number_input("Area of the house", min_value=1500, max_value=16500, step=1)
   bedrooms = st.number_input("Number of bedrooms in the house", min_value=1, max_value=6, step=1)
   bathrooms = st.number_input("Number of bathrooms in the house", min_value=1, max_value=4, step=1)
-  stories = st.number_input("How many storeys the house has?", min_values=1, max_value=4, step=1)
+  stories = st.number_input("How many storeys the house has?", min_value=1, max_value=4, step=1)
   mainroad = st.selectbox("Is the house close to the nearest main road?", ("Yes", "No"))
   guestroom = st.selectbox("Is there a guestroom?", ("Yes", "No"))
   basement = st.selectbox("Is there a basement?", ("Yes", "No"))
