@@ -112,5 +112,10 @@ price_predict = reg.predict(final_input)
 # final_price_predict = (price_predict*(maxpp-minpp))+minpp
 st.write("\n")
 st.write("\n")
-st.subheader("Predicted price of the house is :")
-st.subheader("${:0,.2f}".format(float(price_predict)))
+if st.button("Predict the price"):
+  st.write("\n")
+  st.write("User input parameters")
+  st.write(df_user)
+  st.write("\n")
+  st.subheader("Predicted price of the house is :")
+  st.subheader("${:0,.2f}".format(float(price_predict)))
