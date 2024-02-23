@@ -23,7 +23,7 @@ X_train = df
 
 to_scale = ['area', 'bathrooms', 'stories', 'parking']
 scaler = MinMaxScaler()
-X_train_1[to_scale] = scaler.fit_transform(X_train_1[to_scale])
+X_train_1[to_scale] = scaler.fit_transform(X_train[to_scale])
 
 # Hyperparameter tuning using GridSearchCV for XGBoost model
 param_grid = {
