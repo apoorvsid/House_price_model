@@ -2,10 +2,18 @@ from typing import final
 import streamlit as st
 import pandas as pd 
 import numpy as np
+import schedule
+import requests
+import time
 from model import reg
 
 st.header("House price prediction model")
 st.subheader("Input user parameters")
+
+def ping_app():
+    url = 'https://predictor-model-3avz.onrender.com/' 
+    response = requests.get(url)
+    print('App pinged:', response.status_code)
 
 def user_input_features():
   area = st.slider("Area of the house (in sq. ft.)", min_value=1500, max_value=16500, step=10)
@@ -119,3 +127,9 @@ if st.button("Predict the price"):
   st.write("\n")
   st.subheader("Predicted price of the house is :")
   st.subheader("${:0,.2f}".format(float(price_predict)))
+
+schedule.every(14).minutes.do(ping_app)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)

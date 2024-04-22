@@ -15,6 +15,7 @@ df.drop(['bedrooms'], axis=1, inplace=True)
 df.drop(['mainroad'], axis=1, inplace=True)
 df.drop(['basement'], axis=1, inplace=True)
 df.drop(['hotwaterheating'], axis=1, inplace=True)
+df['price'] = df['price']/2
 # to_scale = ['area', 'bedrooms', 'bathrooms', 'stories', 'parking','price']
 # df[to_scale] = MinMaxScaler().fit_transform(df[to_scale])
 y_train = df.pop('price')
