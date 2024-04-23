@@ -5,6 +5,8 @@ import schedule
 import requests
 import time
 from model import reg
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 st.header("House price prediction model")
 st.subheader("Input user parameters")
@@ -126,6 +128,22 @@ if st.button("Predict the price"):
   st.write("\n")
   st.subheader("Predicted price of the house is :")
   st.subheader("${:0,.2f}".format(float(price_predict)))
+  st.write("\n")
+  st.subheader("Statistics about the data")
+  st.write("Correlation Heatmap")
+  corr_matrix = df1.corr()
+  st.write(corr_matrix)
+  # Create heatmap using seaborn
+  sns.heatmap(corr_matrix, annot=True, cmap='viridis', fmt=".2f")
+  attributes = ['area', 'bedrooms', 'bathrooms', 'stories']
+  for attr in attributes:
+      st.write(f"Price vs {attr.capitalize()}")
+      
+      # Check if attribute is 'area' to determine plot type
+      if attr == 'area':
+          st.line_chart(df1.groupby(attr)['price'].mean(), use_container_width=True)
+      else:
+          st.bar_chart(df1.groupby(attr)['price'].mean(), use_container_width=True)
 
 schedule.every(14).minutes.do(ping_app)
 
