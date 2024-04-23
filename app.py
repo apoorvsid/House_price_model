@@ -6,7 +6,6 @@ import requests
 import time
 from model import reg
 import seaborn as sns
-import matplotlib.pyplot as plt
 
 st.header("House price prediction model")
 st.subheader("Input user parameters")
